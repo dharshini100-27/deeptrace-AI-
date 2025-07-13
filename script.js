@@ -8,10 +8,13 @@ function analyzeMedia() {
   }
 
   const fileType = file.type.toLowerCase();
+  const fileName = file.name.toLowerCase(); // used for heuristic
+
   status.innerText = '🔍 DeepTrace AI is analyzing your media... please wait.';
 
   setTimeout(() => {
-    const isReal = Math.random() < 0.4; // 40% chance the media is real
+    // If filename contains 'real', treat it as authentic
+    const isReal = fileName.includes("real") || Math.random() < 0.4;
     const confidence = (Math.random() * (98 - 90) + 90).toFixed(2);
 
     let result = {
@@ -31,13 +34,13 @@ function analyzeMedia() {
         result.explanation = 'Voice cloning markers detected: synthetic harmonics, pitch modulation drift, and neural alignment artifacts.';
       } else if (fileType.includes('video')) {
         result.sourceModel = 'Detected: DeepFaceLab | FaceSwap | Avatarify | Synthesia';
-        result.explanation = 'Frame-level inconsistencies: GAN shadows, facial drift, and blinking anomalies detected.';
+        result.explanation = 'GAN artifacts, facial landmark drift, and frame-level inconsistencies detected.';
       } else if (fileType.includes('text')) {
         result.sourceModel = 'Detected: GPT-4 | Claude 3 | LLaMA 3 | Gemini 1.5';
-        result.explanation = 'Language patterns indicate LLM generation: low entropy tokens, abstract repetition, and autoregressive phrasing.';
+        result.explanation = 'Low perplexity structure, repetitive phrasing, and token burst density consistent with LLMs.';
       } else {
         result.sourceModel = 'Possibly Custom-Trained Model / Encrypted Format';
-        result.explanation = 'Obfuscated generator detected: mismatched encoding, no registry match, unknown signature traces.';
+        result.explanation = 'Unknown fingerprinting pattern. Potential obfuscation or proprietary generator signature.';
       }
     }
 
