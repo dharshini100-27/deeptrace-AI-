@@ -11,26 +11,34 @@ function analyzeMedia() {
   status.innerText = '🔍 DeepTrace AI is analyzing your media... please wait.';
 
   setTimeout(() => {
+    const isReal = Math.random() < 0.4; // 40% chance the media is real
     const confidence = (Math.random() * (98 - 90) + 90).toFixed(2);
+
     let result = {
+      isReal,
       confidence,
-      blockchainMatch: false,
+      blockchainMatch: isReal,
       sourceModel: '',
       explanation: ''
     };
 
-    if (fileType.includes('audio')) {
-      result.sourceModel = 'Detected: ElevenLabs | Descript Overdub | Voicery';
-      result.explanation = 'Voice cloning markers detected: synthetic frequency harmonics, consistent pitch drift, and alignment artifacts typical of neural TTS systems.';
-    } else if (fileType.includes('video')) {
-      result.sourceModel = 'Detected: DeepFaceLab | FaceSwap | Avatarify | Synthesia';
-      result.explanation = 'Video tampering identified: GAN artifacts in blending zones, inconsistent blink patterns, facial landmark distortion, and lighting discrepancies.';
-    } else if (fileType.includes('text')) {
-      result.sourceModel = 'Detected: GPT-4 | Claude 3 | LLaMA 3 | Gemini 1.5';
-      result.explanation = 'Text generation traces: over-optimization, semantic padding, low perplexity structure, and patterns consistent with autoregressive transformers.';
+    if (isReal) {
+      result.sourceModel = 'Verified Original Content';
+      result.explanation = 'Blockchain hash verified ✅ and no tampering indicators detected. All metadata and digital signatures are intact and authentic.';
     } else {
-      result.sourceModel = 'Possibly Custom-Trained Model / Obfuscated Format';
-      result.explanation = 'Unclassified AI fingerprint. Detected unknown layer metadata, hash mismatch, and encrypted feature encoding. May involve proprietary generator.';
+      if (fileType.includes('audio')) {
+        result.sourceModel = 'Detected: ElevenLabs | Descript Overdub | Voicery';
+        result.explanation = 'Voice cloning markers detected: synthetic harmonics, pitch modulation drift, and neural alignment artifacts.';
+      } else if (fileType.includes('video')) {
+        result.sourceModel = 'Detected: DeepFaceLab | FaceSwap | Avatarify | Synthesia';
+        result.explanation = 'Frame-level inconsistencies: GAN shadows, facial drift, and blinking anomalies detected.';
+      } else if (fileType.includes('text')) {
+        result.sourceModel = 'Detected: GPT-4 | Claude 3 | LLaMA 3 | Gemini 1.5';
+        result.explanation = 'Language patterns indicate LLM generation: low entropy tokens, abstract repetition, and autoregressive phrasing.';
+      } else {
+        result.sourceModel = 'Possibly Custom-Trained Model / Encrypted Format';
+        result.explanation = 'Obfuscated generator detected: mismatched encoding, no registry match, unknown signature traces.';
+      }
     }
 
     localStorage.setItem('deeptrace_result', JSON.stringify(result));
@@ -43,15 +51,27 @@ document.addEventListener('DOMContentLoaded', () => {
   if (resultBox && localStorage.getItem('deeptrace_result')) {
     const data = JSON.parse(localStorage.getItem('deeptrace_result'));
 
-    resultBox.innerHTML = `
-      <div class="result-block">
-        <p><strong>Status:</strong> AI-Generated Content Detected ⚠️</p>
-        <p><strong>Confidence Score:</strong> ${data.confidence}%</p>
-        <p><strong>Suspected Generator:</strong> ${data.sourceModel}</p>
-        <p><strong>Blockchain Verification:</strong> ❌ Hash mismatch – possible tampering</p>
-        <p><strong>Explanation:</strong> ${data.explanation}</p>
-        <button onclick="downloadPDF()">📄 Download PDF Report</button>
-      </div>
-    `;
+    if (data.isReal) {
+      resultBox.innerHTML = `
+        <div class="result-block">
+          <p><strong>Status:</strong> ✅ Authentic Media Detected</p>
+          <p><strong>Confidence Score:</strong> ${data.confidence}%</p>
+          <p><strong>Blockchain Verification:</strong> ✅ Matched - Content Verified</p>
+          <p><strong>Explanation:</strong> ${data.explanation}</p>
+          <button onclick="downloadPDF()">📄 Download PDF Report</button>
+        </div>
+      `;
+    } else {
+      resultBox.innerHTML = `
+        <div class="result-block">
+          <p><strong>Status:</strong> ⚠️ AI-Generated Content Detected</p>
+          <p><strong>Confidence Score:</strong> ${data.confidence}%</p>
+          <p><strong>Suspected Generator:</strong> ${data.sourceModel}</p>
+          <p><strong>Blockchain Verification:</strong> ❌ Hash mismatch – possible tampering</p>
+          <p><strong>Explanation:</strong> ${data.explanation}</p>
+          <button onclick="downloadPDF()">📄 Download PDF Report</button>
+        </div>
+      `;
+    }
   }
 });
