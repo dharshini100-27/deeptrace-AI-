@@ -30,6 +30,30 @@
       <p>&copy; 2025 DeepTrace AI</p>
     </div>
   </footer>
+
   <script src="script.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script>
+    function downloadPDF() {
+      const data = JSON.parse(localStorage.getItem('deeptrace_result'));
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF();
+      doc.setFont("helvetica", "bold");
+      doc.setFontSize(16);
+      doc.text("DeepTrace AI - Detection Report", 20, 20);
+
+      doc.setFont("helvetica", "normal");
+      doc.setFontSize(12);
+      doc.text(`Status: AI-Generated Content Detected ⚠️`, 20, 40);
+      doc.text(`Confidence Score: ${data.confidence}%`, 20, 50);
+      doc.text(`Suspected Generator: ${data.sourceModel}`, 20, 60);
+      doc.text(`Blockchain Status: Hash mismatch ❌`, 20, 70);
+      doc.text("Explanation:", 20, 80);
+      const explanationLines = doc.splitTextToSize(data.explanation, 170);
+      doc.text(explanationLines, 20, 90);
+
+      doc.save("DeepTrace_Report.pdf");
+    }
+  </script>
 </body>
 </html>
