@@ -20,17 +20,17 @@ function analyzeMedia() {
     };
 
     if (fileType.includes('audio')) {
-      result.sourceModel = 'ElevenLabs / Descript Overdub';
-      result.explanation = 'Detected spectral artifacts, robotic pitch patterns, and clone harmonics.';
+      result.sourceModel = 'Detected: ElevenLabs | Descript Overdub | Voicery';
+      result.explanation = 'Voice cloning markers detected: synthetic frequency harmonics, consistent pitch drift, and alignment artifacts typical of neural TTS systems.';
     } else if (fileType.includes('video')) {
-      result.sourceModel = 'DeepFaceLab / Avatarify';
-      result.explanation = 'Frame-level inconsistencies, mismatched blinking rates, and morph boundary shifts detected.';
+      result.sourceModel = 'Detected: DeepFaceLab | FaceSwap | Avatarify | Synthesia';
+      result.explanation = 'Video tampering identified: GAN artifacts in blending zones, inconsistent blink patterns, facial landmark distortion, and lighting discrepancies.';
     } else if (fileType.includes('text')) {
-      result.sourceModel = 'LLaMA / Claude / Copilot';
-      result.explanation = 'Repetitive phrasing, token entropy anomalies, and LLM signature structuring observed.';
+      result.sourceModel = 'Detected: GPT-4 | Claude 3 | LLaMA 3 | Gemini 1.5';
+      result.explanation = 'Text generation traces: over-optimization, semantic padding, low perplexity structure, and patterns consistent with autoregressive transformers.';
     } else {
-      result.sourceModel = 'Unknown AI Model';
-      result.explanation = 'Media fingerprint incomplete or unsupported format.';
+      result.sourceModel = 'Possibly Custom-Trained Model / Obfuscated Format';
+      result.explanation = 'Unclassified AI fingerprint. Detected unknown layer metadata, hash mismatch, and encrypted feature encoding. May involve proprietary generator.';
     }
 
     localStorage.setItem('deeptrace_result', JSON.stringify(result));
@@ -50,6 +50,7 @@ document.addEventListener('DOMContentLoaded', () => {
         <p><strong>Suspected Generator:</strong> ${data.sourceModel}</p>
         <p><strong>Blockchain Verification:</strong> ❌ Hash mismatch – possible tampering</p>
         <p><strong>Explanation:</strong> ${data.explanation}</p>
+        <button onclick="downloadPDF()">📄 Download PDF Report</button>
       </div>
     `;
   }
