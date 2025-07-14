@@ -10,8 +10,6 @@ function analyzeMedia() {
   const fileName = file.name.toLowerCase();
   const fileType = file.type.toLowerCase();
 
-  status.innerText = '🔍 Detecting...';
-
   const realIndicators = ['real', 'authentic', 'original', 'verified'];
   const isReal = realIndicators.some(keyword => fileName.includes(keyword));
 
